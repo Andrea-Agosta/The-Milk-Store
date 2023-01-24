@@ -9,7 +9,7 @@ interface ICard {
 const Card = ({ milk }: ICard) => {
   return (
     <article className="flex flex-col border-2 rounded-2xl p-5 drop-shadow-md bg-[#EFF1F3] max-w-sm">
-      <Link to={`/milk/${milk.id}`}>
+      <Link to={`/milk/${milk.id}`} data-testid={'linkCard'} >
         <figure className="overflow-hidden rounded-lg flex justify-center" >
           <img
             src={milkImg}
