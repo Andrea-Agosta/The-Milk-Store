@@ -8,19 +8,21 @@ interface ICard {
 
 const Card = ({ milk }: ICard) => {
   return (
-    <article className="flex flex-col border-2 rounded-2xl p-5 drop-shadow-md bg-[#EFF1F3] max-w-sm">
+    <article className="flex flex-col drop-shadow-md max-w-sm">
       <Link to={`/milk/${milk.id}`} data-testid={'linkCard'} >
-        <figure className="overflow-hidden rounded-lg flex justify-center" >
+        <figure className="rounded-t-2xl flex justify-center bg-[#f6f6f6]" >
           <img
             src={milkImg}
             alt='milk'
-            className='h-40'
+            className='h-40 my-5'
           />
         </figure>
-        <h1 className="mt-5 font text-2xl font-bold tracking-tight text-[#2F2D2E]">{milk.name}</h1>
-        <div className="flex justify-between">
-          <p className="mt-4 text-xl text-[#2E4057]">{milk.type}</p>
-          <p className={`mt-4 text-xl ${milk.storage > 10 ? 'text-green-500' : 'text-red-500'}`}>{milk.storage} liter</p>
+        <div className='p-5 bg-white rounded-b-2xl'>
+          <h1 className="font font-bold tracking-tight text-black">{milk.name}</h1>
+          <div className="flex justify-between">
+            <p className="mt-4 text-[#2E4057]">{milk.type}</p>
+            <p className={`mt-4 ${milk.storage > 10 ? 'text-green-500' : 'text-red-500'}`}>{milk.storage} liter</p>
+          </div>
         </div>
       </Link>
     </article>

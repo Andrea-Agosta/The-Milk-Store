@@ -3,6 +3,7 @@ import DropDown from '../components/Dropdown/Dropdown'
 import { IMilk } from '../../../type'
 import Search from '../components/Search/Search';
 import Card from '../components/Card/Card';
+import Pagination from '../components/Pagination/Pagination';
 
 const Home = () => {
   const [milkData, setMilkData] = useState<IMilk[]>([]);
@@ -33,16 +34,19 @@ const Home = () => {
 
   return (
     <section className='bg-[#ffe3e1]'>
-      <div className='py-28 flex justify-around'>
-        <div className='flex-col'>
+      <div className='pt-28 pb-10 flex justify-around'>
+        <div className='flex-col mr-60'>
           <Search handleSearchInputChanges={handleSearchInputChanges} callSearchFunction={callSearchFunction} />
           <p className='mt-4 pl-1'> {milkData.length} products</p>
         </div>
         <DropDown milkCategory={milkCategory} />
       </div>
-      <div className='grid grid-cols-1 gap-6'>
-        {renderData.map(milk => <Card key={milk.id} milk={milk} />)}
+      <div className='h-screen flex justify-center'>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 max-w-5xl'>
+          {renderData.map(milk => <Card key={milk.id} milk={milk} />)}
+        </div>
       </div>
+      <Pagination />
     </section>
   )
 }
