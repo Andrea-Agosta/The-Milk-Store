@@ -3,7 +3,7 @@ import { Linkedin } from 'react-bootstrap-icons';
 
 export const Footer = () => {
   return (
-    <footer className="bg-[#2F2D2E] text-gray-400 flex flex-col text-center py-3">
+    <footer className="bg-[#2F2D2E] text-gray-400 flex flex-col text-center py-3" data-testid='footer'>
       <div className="text-3xl m-2 mt-0 flex justify-center" >
         <a href="https://github.com/Andrea-Agosta" data-testid='github-link'><Github className='mr-3 hover:text-[#F18F01]' data-testid='github-icon' /></a>
         <a href="https://uk.linkedin.com/in/andrea-agosta-276ab866" data-testid='linkedin-link'><Linkedin className='hover:text-[#F18F01]' data-testid='linkedin-icon' /></a>

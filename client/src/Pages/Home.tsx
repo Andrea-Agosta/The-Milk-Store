@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import DropDown from '../components/Dropdown'
+import DropDown from '../components/Dropdown/Dropdown'
 import { IMilk } from '../../../type'
+import { Search } from 'react-bootstrap-icons';
 
 const Home = () => {
   const [milkData, setMilkData] = useState<IMilk[]>([]);
@@ -21,6 +22,7 @@ const Home = () => {
     <section className='bg-[#ffe3e1]'>
       <div className='flex justify-center'>
         <DropDown milkCategory={milkCategory} />
+        <Search />
       </div>
     </section>
   )
