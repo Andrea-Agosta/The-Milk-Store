@@ -41,7 +41,7 @@ const Home = () => {
   }
 
   return (
-    <section className='bg-[#ffe3e1]'>
+    <section>
       <div className='pt-28 pb-10 flex justify-around'>
         <div className='flex-col mr-60'>
           <Search handleSearchInputChanges={handleSearchInputChanges} callSearchFunction={callSearchFunction} />
@@ -49,7 +49,7 @@ const Home = () => {
         </div>
         <DropDown milkCategory={milkCategory} />
       </div>
-      <div className='h-screen flex justify-center'>
+      <div className='flex justify-center'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 max-w-5xl'>
           {renderData.map(milk => <Card key={milk.id} milk={milk} />)}
         </div>
