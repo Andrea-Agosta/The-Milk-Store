@@ -1,6 +1,6 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { ChangeEvent, FormEvent, MouseEventHandler, useEffect, useState } from 'react'
 import DropDown from '../components/Dropdown/Dropdown'
-import { IMilk } from '../../../type'
+import { IMilk, IPage } from '../../../type'
 import Search from '../components/Search/Search';
 import Card from '../components/Card/Card';
 import Pagination from '../components/Pagination/Pagination';
@@ -10,6 +10,7 @@ const Home = () => {
   const [milkCategory, setMilkCategory] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [renderData, setRenderData] = useState<IMilk[]>([]);
+  const [page, setPage] = useState<IPage>({} as IPage);
 
   useEffect(() => {
     fetch('./api/milk')
@@ -19,6 +20,7 @@ const Home = () => {
         setRenderData(res.results);
         const categoriesList = res.results.reduce((container: string[], item: IMilk) => container.includes(item.type) ? container : [...container, item.type], []);
         setMilkCategory(categoriesList);
+        setPage({ current: 1, last: Math.round(res.results.length / 6) })
       })
       .catch(err => console.error(err))
   }, []);
@@ -30,6 +32,12 @@ const Home = () => {
   const callSearchFunction = (event: FormEvent<HTMLInputElement>) => {
     event.preventDefault();
     //function for searching
+  }
+
+  const changePage: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.preventDefault();
+    console.log(event.currentTarget.name, 'event');
+
   }
 
   return (
@@ -46,7 +54,7 @@ const Home = () => {
           {renderData.map(milk => <Card key={milk.id} milk={milk} />)}
         </div>
       </div>
-      <Pagination />
+      <Pagination page={page} changePage={changePage} />
     </section>
   )
 }

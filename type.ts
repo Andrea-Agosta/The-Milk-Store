@@ -4,3 +4,8 @@ export interface IMilk {
   "storage": number,
   "id": string
 }
+
+export interface IPage {
+  current: number,
+  last: number
+}
