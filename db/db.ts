@@ -75,3 +75,17 @@ export const countAllDataSearch = async (search: string): Promise<number> => {
   setTimeout(() => client.close(), 1000);
   return numberOfItems;
 };
+
+export const getDataByID = async (id: string): Promise<IMilk> => {
+  const { collection, client } = await connect();
+  const data = await collection.findOne({ id: id });
+  setTimeout(() => client.close(), 1000);
+  return data;
+};
+
+export const updateDataByID = async (id: string, quantity: string): Promise<IMilk> => {
+  const { collection, client } = await connect();
+  const data = await collection.updateOne({ id: id }, { $set: { storage: quantity } });
+  setTimeout(() => client.close(), 1000);
+  return data;
+};

@@ -21,6 +21,23 @@ const Product = () => {
 
   const handleAmountChange = (event: ChangeEvent<HTMLInputElement>) => setRangeValue(Number(event.currentTarget.value));
 
+  const makeOrder = () => {
+    fetch(`/api/milk/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        quantity: rangeValue,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then((response) => response.json())
+      .then((json) => console.log(json));
+
+    setMilk(prev => ({ ...prev, storage: milk.storage - rangeValue }))
+    setRangeValue(1);
+  };
+
   return (
     <section className="flex flex-col items-center">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5x mt-32" >
@@ -40,14 +57,14 @@ const Product = () => {
               min="range"
               max={milk.storage}
               step="1"
-              defaultValue={1}
+              defaultValue={rangeValue}
               id="rangeSelect"
               onChange={e => handleAmountChange(e)}
               data-testid="rangeSelect"
             />
             <p className="mt-2 text-base bg-white px-4 py-2 rounded w-24 text-center" data-testid='quantityOrder'> {rangeValue} liter</p>
           </div>
-          <button className="rounded px-24 py-4 mt-7 bg-gray-300 hover:bg-gray-400 mb-5">Order</button>
+          <button className="rounded px-24 py-4 mt-7 bg-gray-300 hover:bg-gray-400 mb-5" onClick={makeOrder}>Order</button>
         </div>
       </div>
     </section >

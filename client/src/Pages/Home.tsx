@@ -95,8 +95,6 @@ const Home = () => {
     }
   };
 
-  console.log(milkData?.data.length, 'heey');
-
   return (
     <section>
       <div className='pt-28 pb-10 flex justify-around'>
