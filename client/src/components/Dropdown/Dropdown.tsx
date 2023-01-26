@@ -1,12 +1,13 @@
-import { Fragment } from 'react'
+import { ChangeEvent, Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 
 interface IDropdown {
   milkCategory: string[];
+  handleCheckboxChange(event: ChangeEvent<HTMLInputElement>): void;
 }
 
-export default function DropDown({ milkCategory }: IDropdown) {
+export default function DropDown({ milkCategory, handleCheckboxChange }: IDropdown) {
   return (
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -32,7 +33,7 @@ export default function DropDown({ milkCategory }: IDropdown) {
                 <Menu.Item key={index}>
                   <div className='row flex gap-2 p-2 '>
                     <div className='col-2'>
-                      <input type="checkbox" name='check' data-testid={`checkbox${index}`} />
+                      <input type="checkbox" name={category} data-testid={`checkbox${index}`} onChange={handleCheckboxChange} />
                     </div>
                     <div className='col-10'>
                       <label htmlFor="check">{category}</label>

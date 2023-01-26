@@ -7,9 +7,9 @@ import Pagination from '../components/Pagination/Pagination';
 
 const Home = () => {
   const [milkData, setMilkData] = useState<IMilkRespone>();
-  // const [milkCategory, setMilkCategory] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
   const [page, setPage] = useState<IPage>({} as IPage);
+  const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
     fetch('./api/milk')
@@ -32,9 +32,49 @@ const Home = () => {
 
   const changePage: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
-    console.log(event.currentTarget.name, 'event');
+    if (event.currentTarget.name === 'prev') {
+      fetch(`./api/milk/filter?page=${page.current - 1}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: page.current - 1, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+    }
 
+    if (event.currentTarget.name === 'next') {
+      fetch(`./api/milk/filter?page=${page.current + 1}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: page.current + 1, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+    }
+
+    if (event.currentTarget.name === 'last') {
+      fetch(`./api/milk/filter?page=${page.last}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: page.last, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+    }
   }
+
+  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    if (isChecked) {
+      fetch('./api/milk/filter')
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+    }
+  };
 
   return (
     <section>
@@ -43,7 +83,7 @@ const Home = () => {
           <Search handleSearchInputChanges={handleSearchInputChanges} callSearchFunction={callSearchFunction} />
           <p className='mt-4 pl-1'> {milkData ? milkData.numberOfItems : ''} products</p>
         </div>
-        <DropDown milkCategory={milkData ? milkData.types : []} />
+        <DropDown milkCategory={milkData ? milkData.types : []} handleCheckboxChange={handleCheckboxChange} />
       </div>
       <div className='flex justify-center mb-20'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 max-w-5xl'>

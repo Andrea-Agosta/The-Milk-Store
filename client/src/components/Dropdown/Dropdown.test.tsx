@@ -1,18 +1,19 @@
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import DropDown from "./Dropdown";
 
 describe("Dropdown", () => {
 
   const mockMilkCategory: string[] = ['test', 'testMilk', 'testNewMilk'];
+  const mockHandleCheckboxChange = jest.fn();
 
   it("should render dropdown", async () => {
-    render(<DropDown milkCategory={mockMilkCategory} />);
+    render(<DropDown milkCategory={mockMilkCategory} handleCheckboxChange={mockHandleCheckboxChange} />);
     const buttonElement = screen.getByTestId('dropdown');
     expect(buttonElement).toBeInTheDocument();
   });
 
   it("should render element when the button is clicked", async () => {
-    render(<DropDown milkCategory={mockMilkCategory} />);
+    render(<DropDown milkCategory={mockMilkCategory} handleCheckboxChange={mockHandleCheckboxChange} />);
     const buttonElement = screen.getByTestId('dropdown');
     expect(screen.queryByText('test')).toBeNull();
     expect(screen.queryByTestId('checkbox0')).toBeNull();
@@ -30,7 +31,7 @@ describe("Dropdown", () => {
   });
 
   it('should hide menu items when button is clicked again', () => {
-    render(<DropDown milkCategory={mockMilkCategory} />);
+    render(<DropDown milkCategory={mockMilkCategory} handleCheckboxChange={mockHandleCheckboxChange} />);
     const buttonElement = screen.getByTestId('dropdown');
     expect(screen.queryByText('test')).toBeNull();
     expect(screen.queryByTestId('checkbox0')).toBeNull();
@@ -55,7 +56,7 @@ describe("Dropdown", () => {
   });
 
   it('should checkbox is clickable', () => {
-    render(<DropDown milkCategory={mockMilkCategory} />);
+    render(<DropDown milkCategory={mockMilkCategory} handleCheckboxChange={mockHandleCheckboxChange} />);
     fireEvent.click(screen.getByTestId('dropdown'));
     const checkbox = screen.getByTestId(`checkbox0`) as HTMLInputElement;
     expect(checkbox.checked).toBe(false);
