@@ -1,26 +1,22 @@
 import { ChangeEvent, FormEvent, MouseEventHandler, useEffect, useState } from 'react'
 import DropDown from '../components/Dropdown/Dropdown'
-import { IMilk, IPage } from '../../../type'
+import { IMilkRespone, IPage } from '../../../type'
 import Search from '../components/Search/Search';
 import Card from '../components/Card/Card';
 import Pagination from '../components/Pagination/Pagination';
 
 const Home = () => {
-  const [milkData, setMilkData] = useState<IMilk[]>([]);
-  const [milkCategory, setMilkCategory] = useState<string[]>([]);
+  const [milkData, setMilkData] = useState<IMilkRespone>();
+  // const [milkCategory, setMilkCategory] = useState<string[]>([]);
   const [searchValue, setSearchValue] = useState('');
-  const [renderData, setRenderData] = useState<IMilk[]>([]);
   const [page, setPage] = useState<IPage>({} as IPage);
 
   useEffect(() => {
     fetch('./api/milk')
       .then(res => res.json())
       .then(res => {
-        setMilkData(res.results);
-        setRenderData(res.results);
-        const categoriesList = res.results.reduce((container: string[], item: IMilk) => container.includes(item.type) ? container : [...container, item.type], []);
-        setMilkCategory(categoriesList);
-        setPage({ current: 1, last: Math.round(res.results.length / 6) })
+        setMilkData(res);
+        setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
       })
       .catch(err => console.error(err))
   }, []);
@@ -45,13 +41,13 @@ const Home = () => {
       <div className='pt-28 pb-10 flex justify-around'>
         <div className='flex-col mr-60'>
           <Search handleSearchInputChanges={handleSearchInputChanges} callSearchFunction={callSearchFunction} />
-          <p className='mt-4 pl-1'> {milkData.length} products</p>
+          <p className='mt-4 pl-1'> {milkData ? milkData.numberOfItems : ''} products</p>
         </div>
-        <DropDown milkCategory={milkCategory} />
+        <DropDown milkCategory={milkData ? milkData.types : []} />
       </div>
-      <div className='flex justify-center'>
+      <div className='flex justify-center mb-20'>
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20 max-w-5xl'>
-          {renderData.map(milk => <Card key={milk.id} milk={milk} />)}
+          {milkData ? milkData?.data.map(milk => <Card key={milk.id} milk={milk} />) : ''}
         </div>
       </div>
       <Pagination page={page} changePage={changePage} />

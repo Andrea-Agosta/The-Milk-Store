@@ -9,7 +9,7 @@ interface IPagination {
 const Pagination = ({ page, changePage }: IPagination) => {
   const buttonStyle = "hover:bg-gray-500 py-7 px-9 text-gray-500 cursor-pointer text-lg mr-5 border-2 border-gray-500 font-bold hover:text-black";
   return (
-    <div className='flex justify-center'>
+    <div className='flex justify-center pb-10'>
       <div className='flex justify-around my-5'>
         <button className={buttonStyle} name='prev' onClick={changePage}> {'<'} </button>
         <p className={buttonStyle + 'font-bold border-black text-black pointer-events-none'}> {page.current} </p>
