@@ -48,9 +48,9 @@ export const getAllbyDefault = async (): Promise<IMilk[]> => {
   return data.toArray();
 }
 
-export const countAllData = async (): Promise<number> => {
+export const countAllData = async (filter: string | null): Promise<number> => {
   const { collection, client } = await connect();
-  const numberOfItems = await collection.count();
+  const numberOfItems = filter ? await collection.count({ type: filter }) : await collection.count();
   setTimeout(() => client.close(), 1000);
   return numberOfItems;
 };

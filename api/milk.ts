@@ -1,9 +1,8 @@
-// import milksDb from '../db/milksDb.json';
 import express from 'express';
 import { Request, Response } from 'express';
-// import { IQuery } from 'type';
+import { IQuery } from 'type';
 const router = express.Router();
-import { getAllMilks } from '../db/index';
+import { getAll, getAllMilks } from '../db/index';
 
 
 router.get('/', async (_req: Request, res: Response) => {
@@ -15,14 +14,14 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 });
 
-// router.get('/filter', async (req: Request<{}, {}, {}, IQuery>, res: Response) => {
-//   try {
-//     const response = await getAll(req.query.type, req.query.page);
-//     res.status(200).json(response);
-//   } catch (err) {
-//     res.status(400).send({ message: err.message });
-//   }
-// });
+router.get('/filter', async (req: Request<{}, {}, {}, IQuery>, res: Response) => {
+  try {
+    const response = await getAll(req.query.type, req.query.page);
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(400).send({ message: err.message });
+  }
+});
 
 // router.get('/:id', (req: Request, res: Response) => {
 //   const uuidRegex: RegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
