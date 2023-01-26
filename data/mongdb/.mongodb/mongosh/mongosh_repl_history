@@ -1,0 +1,7 @@
+db.milk.find({type: 'Hemp milk'}).pretty()
+clear
+db.milk.find({type: 'Hemp milk'}).pretty()
+db.milk.find({type: 'Coconut milk'}).pretty()
+show collections
+use milk
+show dbs
