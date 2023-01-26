@@ -20,3 +20,8 @@ export interface IMilkRespone {
   numberOfItems: number;
   types: string[];
 }
+
+export interface ISearch {
+  search: string;
+  page: string;
+}

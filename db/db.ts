@@ -50,7 +50,7 @@ export const getAllbyDefault = async (): Promise<IMilk[]> => {
 
 export const countAllData = async (filter: string | null): Promise<number> => {
   const { collection, client } = await connect();
-  const numberOfItems = filter ? await collection.count({ type: filter }) : await collection.count();
+  const numberOfItems = filter ? await collection.countDocuments({ type: filter }) : await collection.countDocuments();
   setTimeout(() => client.close(), 1000);
   return numberOfItems;
 };
@@ -60,4 +60,18 @@ export const getAllTypes = async (): Promise<string[]> => {
   const arrayOfTypes = await collection.distinct("type");
   setTimeout(() => client.close(), 1000);
   return arrayOfTypes;
+};
+
+export const findAllFromSearch = async (search: string, page: string): Promise<IMilk[]> => {
+  const { collection, client } = await connect();
+  const searchData = page === '1' ? await collection.find({ name: { $regex: `${search}`, $options: 'i' } }).limit(9) : await collection.find({ name: { $regex: `${search}`, $options: 'i' } }).skip((Number(page) - 1) * 9).limit(9)
+  setTimeout(() => client.close(), 1000);
+  return searchData.toArray();
+}
+
+export const countAllDataSearch = async (search: string): Promise<number> => {
+  const { collection, client } = await connect();
+  const numberOfItems = await collection.countDocuments({ name: search });
+  setTimeout(() => client.close(), 1000);
+  return numberOfItems;
 };

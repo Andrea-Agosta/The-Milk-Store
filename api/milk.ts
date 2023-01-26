@@ -1,8 +1,8 @@
 import express from 'express';
 import { Request, Response } from 'express';
-import { IQuery } from 'type';
+import { IQuery, ISearch } from 'type';
 const router = express.Router();
-import { getAll, getAllMilks } from '../db/index';
+import { getAll, getAllFromSearch, getAllMilks } from '../db/index';
 
 
 router.get('/', async (_req: Request, res: Response) => {
@@ -17,6 +17,15 @@ router.get('/', async (_req: Request, res: Response) => {
 router.get('/filter', async (req: Request<{}, {}, {}, IQuery>, res: Response) => {
   try {
     const response = await getAll(req.query.type, req.query.page);
+    res.status(200).json(response);
+  } catch (err) {
+    res.status(400).send({ message: err.message });
+  }
+});
+
+router.get('/search', async (req: Request<{}, {}, {}, ISearch>, res: Response) => {
+  try {
+    const response = await getAllFromSearch(req.query.search, req.query.page);
     res.status(200).json(response);
   } catch (err) {
     res.status(400).send({ message: err.message });

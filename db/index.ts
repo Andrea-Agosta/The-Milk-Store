@@ -1,5 +1,5 @@
 import { IMilk, IMilkRespone } from "type";
-import { countAllData, getAllbyDefault, getAllbyPage, getAllbyType, getAllFilteredMilkbyPage, getAllTypes } from "./db";
+import { countAllData, countAllDataSearch, findAllFromSearch, getAllbyDefault, getAllbyPage, getAllbyType, getAllFilteredMilkbyPage, getAllTypes } from "./db";
 
 export const getAllMilks = async (): Promise<IMilkRespone> => {
   const data: IMilk[] = await getAllbyDefault();
@@ -28,4 +28,11 @@ export const getAll = async (type: string, page: string): Promise<IMilkRespone> 
     return (await { data: data, numberOfItems: numberOfItems, types: types })
   };
   return getAllMilks();
+}
+
+export const getAllFromSearch = async (search: string, page: string): Promise<IMilkRespone> => {
+  const data: IMilk[] = await findAllFromSearch(search, page);
+  const numberOfItems: number = await countAllDataSearch(search);
+  const types: string[] = await getAllTypes();
+  return (await { data: data, numberOfItems: numberOfItems, types: types })
 }
