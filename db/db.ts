@@ -24,7 +24,7 @@ const connect = async () => {
 export const getAll = async (req: Request<{}, {}, {}, IQuery>): Promise<IMilk[]> => {
   const { collection, client } = await connect();
   if (req.query.type && req.query.search) {
-    const data = await collection.find({ name: { $regex: req.query.search, $options: 'i' } }, { type: req.query.type }).skip((Number(req.query.page) - 1) * 9).limit(9);
+    const data = await collection.find({ $and: [{ name: { $regex: req.query.search, $options: 'i' } }, { type: req.query.type }] }).skip((Number(req.query.page) - 1) * 9).limit(9);
     setTimeout(() => client.close(), 1000);
     return data.toArray();
   }
@@ -46,7 +46,7 @@ export const getAll = async (req: Request<{}, {}, {}, IQuery>): Promise<IMilk[]>
 export const countAll = async (req: Request<{}, {}, {}, IQuery>): Promise<number> => {
   const { collection, client } = await connect();
   if (req.query.type && req.query.search) {
-    const numberOfItems = await collection.find({ name: { $regex: req.query.search, $options: 'i' } }, { type: req.query.type }).count();
+    const numberOfItems = await collection.find({ $and: [{ name: { $regex: req.query.search, $options: 'i' } }, { type: req.query.type }] }).count();
     setTimeout(() => client.close(), 1000);
     return numberOfItems;
   }
