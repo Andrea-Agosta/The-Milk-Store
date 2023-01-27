@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header component should render correctly 1`] = `
+<header
+  class="text-[#ce89a1] font-title font-bold text-7xl text-center p-5"
+>
+  THE MILK STORE
+</header>
+`;
