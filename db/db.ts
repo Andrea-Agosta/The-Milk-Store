@@ -1,4 +1,5 @@
-import { IMilk } from "type";
+import { Request } from 'express';
+import { IMilk, IQuery } from "type";
 const { MongoClient } = require('mongodb');
 
 const url = `mongodb://andrea:password123@localhost:27017`
@@ -20,37 +21,46 @@ const connect = async () => {
   return { collection, client };
 };
 
-export const getAllFilteredMilkbyPage = async (type: string, page: string): Promise<IMilk[]> => {
+export const getAll = async (req: Request<{}, {}, {}, IQuery>): Promise<IMilk[]> => {
   const { collection, client } = await connect();
-  const data = await collection.find({ type: type }).skip((Number(page) - 1) * 9).limit(9);
+  if (req.query.type && req.query.search) {
+    const data = await collection.find({ name: { $regex: req.query.search, $options: 'i' } }, { type: req.query.type }).skip((Number(req.query.page) - 1) * 9).limit(9);
+    setTimeout(() => client.close(), 1000);
+    return data.toArray();
+  }
+  if (req.query.type) {
+    const data = await collection.find({ type: req.query.type }).skip((Number(req.query.page) - 1) * 9).limit(9);
+    setTimeout(() => client.close(), 1000);
+    return data.toArray();
+  }
+  if (req.query.search) {
+    const data = await collection.find({ name: { $regex: req.query.search, $options: 'i' } }).skip((Number(req.query.page) - 1) * 9).limit(9);
+    setTimeout(() => client.close(), 1000);
+    return data.toArray();
+  }
+  const data = await collection.find().skip((Number(req.query.page) - 1) * 9).limit(9);
   setTimeout(() => client.close(), 1000);
   return data.toArray();
 };
 
-export const getAllbyPage = async (page: string): Promise<IMilk[]> => {
+export const countAll = async (req: Request<{}, {}, {}, IQuery>): Promise<number> => {
   const { collection, client } = await connect();
-  const data = await collection.find().skip((Number(page) - 1) * 9).limit(9);
-  setTimeout(() => client.close(), 1000);
-  return data.toArray();
-};
-
-export const getAllbyType = async (type: string): Promise<IMilk[]> => {
-  const { collection, client } = await connect();
-  const data = await collection.find({ "type": type }).limit(9);
-  setTimeout(() => client.close(), 1000);
-  return data.toArray();
-};
-
-export const getAllbyDefault = async (): Promise<IMilk[]> => {
-  const { collection, client } = await connect();
-  const data = await collection.find().limit(9);
-  setTimeout(() => client.close(), 1000);
-  return data.toArray();
-}
-
-export const countAllData = async (filter: string | null): Promise<number> => {
-  const { collection, client } = await connect();
-  const numberOfItems = filter ? await collection.countDocuments({ type: filter }) : await collection.countDocuments();
+  if (req.query.type && req.query.search) {
+    const numberOfItems = await collection.find({ name: { $regex: req.query.search, $options: 'i' } }, { type: req.query.type }).count();
+    setTimeout(() => client.close(), 1000);
+    return numberOfItems;
+  }
+  if (req.query.type) {
+    const numberOfItems = await collection.find({ type: req.query.type }).count();
+    setTimeout(() => client.close(), 1000);
+    return numberOfItems;
+  }
+  if (req.query.search) {
+    const numberOfItems = await collection.find({ name: { $regex: req.query.search, $options: 'i' } }).count();
+    setTimeout(() => client.close(), 1000);
+    return numberOfItems;
+  }
+  const numberOfItems = await collection.countDocuments();
   setTimeout(() => client.close(), 1000);
   return numberOfItems;
 };
@@ -60,20 +70,6 @@ export const getAllTypes = async (): Promise<string[]> => {
   const arrayOfTypes = await collection.distinct("type");
   setTimeout(() => client.close(), 1000);
   return arrayOfTypes;
-};
-
-export const findAllFromSearch = async (search: string, page: string): Promise<IMilk[]> => {
-  const { collection, client } = await connect();
-  const searchData = page === '1' ? await collection.find({ name: { $regex: `${search}`, $options: 'i' } }).limit(9) : await collection.find({ name: { $regex: `${search}`, $options: 'i' } }).skip((Number(page) - 1) * 9).limit(9)
-  setTimeout(() => client.close(), 1000);
-  return searchData.toArray();
-}
-
-export const countAllDataSearch = async (search: string): Promise<number> => {
-  const { collection, client } = await connect();
-  const numberOfItems = await collection.countDocuments({ name: search });
-  setTimeout(() => client.close(), 1000);
-  return numberOfItems;
 };
 
 export const getDataByID = async (id: string): Promise<IMilk> => {

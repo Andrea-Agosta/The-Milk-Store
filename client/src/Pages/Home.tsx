@@ -28,8 +28,8 @@ const Home = () => {
 
   const callSearchFunction = (event: FormEvent<HTMLInputElement>) => {
     event.preventDefault();
-    navigate(`?search=${searchValue}&page=${page.current}`);
-    fetch(`./api/milk/search?search=${searchValue}&page=${page.current}`)
+    navigate(`?search=${searchValue}&page=${page.current}&`);
+    fetch(`./api/milk?search=${searchValue}&page=${page.current}`)
       .then(res => res.json())
       .then(res => {
         setMilkData(res);
@@ -37,64 +37,11 @@ const Home = () => {
       })
       .catch(err => console.error(err))
   }
-
-  const changePage: MouseEventHandler<HTMLButtonElement> = (event) => {
-    event.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search);
-    const search = urlParams.get('search');
-    const filter = urlParams.get('filter');
-    const pageUrl = urlParams.get('page');
-    let url = '';
-    if (event.currentTarget.name === 'prev') {
-      fetch(`./api/milk/filter?page=${page.current - 1}`)
-        .then(res => res.json())
-        .then(res => {
-          setMilkData(res);
-          setPage({ current: page.current - 1, last: Math.ceil(res.numberOfItems / 9) })
-        })
-        .catch(err => console.error(err))
-    }
-
-    if (event.currentTarget.name === 'next') {
-      search && (url += `&search=${search}`);
-      filter && (url += `&filter=${filter}`);
-      page && (url += `&page=${Number(pageUrl) + 1}`);
-      // fetch(`./api/milk/filter?page=${page.current + 1}`)
-      fetch(`./api/milk/filter?${url}`)
-        .then(res => res.json())
-        .then(res => {
-          setMilkData(res);
-          setPage({ current: page.current + 1, last: Math.ceil(res.numberOfItems / 9) })
-        })
-        .catch(err => console.error(err))
-    }
-
-    if (event.currentTarget.name === 'last') {
-      fetch(`./api/milk/filter?page=${page.last}`)
-        .then(res => res.json())
-        .then(res => {
-          setMilkData(res);
-          setPage({ current: page.last, last: Math.ceil(res.numberOfItems / 9) })
-        })
-        .catch(err => console.error(err))
-    }
-  }
-
-  const handleCheckboxChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    event.preventDefault();
-    console.log(event.currentTarget.name, 'targhet');
-    fetch(`./api/milk/filter?type=${event.currentTarget.name}&page=${page.current}`)
-      .then(res => res.json())
-      .then(res => {
-        setMilkData(res);
-        setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
-      })
-      .catch(err => console.error(err))
-  };
 
   const submitWithEnterKey = (event: React.KeyboardEvent): void => {
     if (event.key === 'Enter') {
-      fetch(`./api/milk/search?search=${searchValue}&page=${page.current}`)
+      navigate(`?search=${searchValue}&page=${page.current}&`);
+      fetch(`./api/milk?search=${searchValue}&page=${page.current}`)
         .then(res => res.json())
         .then(res => {
           setMilkData(res);
@@ -103,6 +50,69 @@ const Home = () => {
         .catch(err => console.error(err));
       (event.currentTarget as HTMLInputElement).value = '';
     }
+  };
+
+  const changePage: MouseEventHandler<HTMLButtonElement> = (event) => {
+    event.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    const search = urlParams.get('search');
+    const filter = urlParams.get('type');
+    const pageUrl = urlParams.get('page');
+    let url = '';
+    if (event.currentTarget.name === 'prev') {
+      search && (url += `&search=${search}`);
+      filter && (url += `&type=${filter}`);
+      page && (url += `&page=${Number(pageUrl) - 1}`);
+      fetch(`./api/milk?${url}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: page.current - 1, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+      navigate(`?${url}`);
+    }
+
+    if (event.currentTarget.name === 'next') {
+      search && (url += `&search=${search}`);
+      filter && (url += `&type=${filter.split(' ').join('%20')}`);
+      page && (url += `&page=${Number(pageUrl) + 1}`);
+      // fetch(`./api/milk/filter?page=${page.current + 1}`)
+      fetch(`./api/milk?${url}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: page.current + 1, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+      navigate(`?${url}`);
+    }
+
+    if (event.currentTarget.name === 'last') {
+      search && (url += `&search=${search}`);
+      filter && (url += `&type=${filter}`);
+      page && (url += `&page=${page.last}`);
+      fetch(`./api/milk?${page.last}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: page.last, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+      navigate(`?${url}`);
+    }
+  }
+
+  const handleCheckboxChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault();
+    navigate(`?&type=${event.currentTarget.name}&page=${page.current}`);
+    fetch(`./api/milk?type=${event.currentTarget.name}&page=${page.current}`)
+      .then(res => res.json())
+      .then(res => {
+        setMilkData(res);
+        setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
+      })
+      .catch(err => console.error(err))
   };
 
   return (

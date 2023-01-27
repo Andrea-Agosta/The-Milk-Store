@@ -13,6 +13,7 @@ export interface IPage {
 export type IQuery = {
   type: string;
   page: string;
+  search: string;
 }
 
 export interface IMilkRespone {

@@ -1,41 +1,13 @@
-import { IMilk, IMilkRespone } from "type";
-import { countAllData, countAllDataSearch, findAllFromSearch, getAllbyDefault, getAllbyPage, getAllbyType, getAllFilteredMilkbyPage, getAllTypes, getDataByID, updateDataByID } from "./db";
+import { IMilk, IMilkRespone, IQuery } from "type";
+import { Request } from 'express';
+import { countAll, getAll, getAllTypes, getDataByID, updateDataByID } from "./db";
 
-export const getAllMilks = async (): Promise<IMilkRespone> => {
-  const data: IMilk[] = await getAllbyDefault();
-  const numberOfItems: number = await countAllData(null);
+export const getAllMilks = async (req: Request<{}, {}, {}, IQuery>): Promise<IMilkRespone> => {
+  const data: IMilk[] = await getAll(req);
+  const numberOfItems: number = await countAll(req);
   const types: string[] = await getAllTypes();
   return (await { data: data, numberOfItems: numberOfItems, types: types })
 };
-
-export const getAll = async (type: string, page: string): Promise<IMilkRespone> => {
-  if (type && page) {
-    const data: IMilk[] = await getAllFilteredMilkbyPage(type, page);
-    const numberOfItems: number = await countAllData(type);
-    const types: string[] = await getAllTypes();
-    return (await { data: data, numberOfItems: numberOfItems, types: types })
-  };
-  if (!type && page) {
-    const data: IMilk[] = await getAllbyPage(page);
-    const numberOfItems: number = await countAllData(null);
-    const types: string[] = await getAllTypes();
-    return (await { data: data, numberOfItems: numberOfItems, types: types })
-  };
-  if (type && !page) {
-    const data: IMilk[] = await getAllbyType(type);
-    const numberOfItems: number = await countAllData(type);
-    const types: string[] = await getAllTypes();
-    return (await { data: data, numberOfItems: numberOfItems, types: types })
-  };
-  return getAllMilks();
-}
-
-export const getAllFromSearch = async (search: string, page: string): Promise<IMilkRespone> => {
-  const data: IMilk[] = await findAllFromSearch(search, page);
-  const numberOfItems: number = await countAllDataSearch(search);
-  const types: string[] = await getAllTypes();
-  return (await { data: data, numberOfItems: numberOfItems, types: types })
-}
 
 export const getDataById = async (id: string | undefined): Promise<IMilk> => {
   const uuidRegex: RegExp = /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i;
