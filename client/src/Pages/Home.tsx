@@ -4,12 +4,13 @@ import { IMilkRespone, IPage } from '../../../type'
 import Search from '../components/Search/Search';
 import Card from '../components/Card/Card';
 import Pagination from '../components/Pagination/Pagination';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
   const [milkData, setMilkData] = useState<IMilkRespone>();
   const [searchValue, setSearchValue] = useState('');
   const [page, setPage] = useState<IPage>({} as IPage);
-  const [isChecked, setIsChecked] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('./api/milk')
@@ -27,6 +28,7 @@ const Home = () => {
 
   const callSearchFunction = (event: FormEvent<HTMLInputElement>) => {
     event.preventDefault();
+    navigate(`?search=${searchValue}&page=${page.current}`);
     fetch(`./api/milk/search?search=${searchValue}&page=${page.current}`)
       .then(res => res.json())
       .then(res => {
@@ -38,6 +40,11 @@ const Home = () => {
 
   const changePage: MouseEventHandler<HTMLButtonElement> = (event) => {
     event.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    const search = urlParams.get('search');
+    const filter = urlParams.get('filter');
+    const pageUrl = urlParams.get('page');
+    let url = '';
     if (event.currentTarget.name === 'prev') {
       fetch(`./api/milk/filter?page=${page.current - 1}`)
         .then(res => res.json())
@@ -49,7 +56,11 @@ const Home = () => {
     }
 
     if (event.currentTarget.name === 'next') {
-      fetch(`./api/milk/filter?page=${page.current + 1}`)
+      search && (url += `&search=${search}`);
+      filter && (url += `&filter=${filter}`);
+      page && (url += `&page=${Number(pageUrl) + 1}`);
+      // fetch(`./api/milk/filter?page=${page.current + 1}`)
+      fetch(`./api/milk/filter?${url}`)
         .then(res => res.json())
         .then(res => {
           setMilkData(res);
@@ -69,17 +80,16 @@ const Home = () => {
     }
   }
 
-  const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleCheckboxChange = async (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    if (isChecked) {
-      fetch('./api/milk/filter')
-        .then(res => res.json())
-        .then(res => {
-          setMilkData(res);
-          setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
-        })
-        .catch(err => console.error(err))
-    }
+    console.log(event.currentTarget.name, 'targhet');
+    fetch(`./api/milk/filter?type=${event.currentTarget.name}&page=${page.current}`)
+      .then(res => res.json())
+      .then(res => {
+        setMilkData(res);
+        setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
+      })
+      .catch(err => console.error(err))
   };
 
   const submitWithEnterKey = (event: React.KeyboardEvent): void => {

@@ -15,6 +15,8 @@ router.get('/', async (_req: Request, res: Response) => {
 });
 
 router.get('/filter', async (req: Request<{}, {}, {}, IQuery>, res: Response) => {
+  console.log(req.query);
+
   try {
     const response = await getAll(req.query.type, req.query.page);
     res.status(200).json(response);

@@ -15,7 +15,7 @@ The owner of the shop sent a wireframe and design of the website for you to foll
 ![Alt text](images/Screenshot%202023-01-23%20at%2011.01.55.png)
 ![Alt text](images/Screenshot%202023-01-23%20at%2011.02.06.png)
 
-# Requirements
+<h1> Requirements <h1>
 
 - A proper README, this should include background, how to run the app, etc… 
 - As the customer enters the site they should be met with all the cards of milk that are in storage

@@ -31,9 +31,7 @@ const Product = () => {
         'Content-type': 'application/json; charset=UTF-8',
       },
     })
-      .then((response) => response.json())
-      .then((json) => console.log(json));
-
+    alert('Order Submitted successfully');
     setMilk(prev => ({ ...prev, storage: milk.storage - rangeValue }))
     setRangeValue(1);
   };
@@ -53,7 +51,7 @@ const Product = () => {
           <div className="flex flex-col items-center">
             <input
               type="range"
-              className="mt-5 form-range w-full h-6 p-0 bg-transparent focus:outline-none focus:ring-0 accent-[#00fc07]"
+              className="mt-5 w-full h-6 p-0 focus:outline-none focus:ring-0 accent-[#00fc07]"
               min="range"
               max={milk.storage}
               step="1"
