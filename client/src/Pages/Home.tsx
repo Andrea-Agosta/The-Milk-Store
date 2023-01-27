@@ -28,27 +28,52 @@ const Home = () => {
 
   const callSearchFunction = (event: FormEvent<HTMLInputElement>) => {
     event.preventDefault();
-    navigate(`?search=${searchValue}&page=${page.current}&`);
-    fetch(`./api/milk?search=${searchValue}&page=${page.current}`)
-      .then(res => res.json())
-      .then(res => {
-        setMilkData(res);
-        setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
-      })
-      .catch(err => console.error(err))
-  }
-
-  const submitWithEnterKey = (event: React.KeyboardEvent): void => {
-    if (event.key === 'Enter') {
-      navigate(`?search=${searchValue}&page=${page.current}&`);
+    const urlParams = new URLSearchParams(window.location.search);
+    const filter = urlParams.get('type');
+    if (filter) {
+      navigate(`?search=${searchValue}&type=${filter}&page=${page.current}`);
+      fetch(`./api/milk?search=${searchValue}&type=${filter}&page=${page.current}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+    } else {
+      navigate(`?search=${searchValue}&page=${page.current}`);
       fetch(`./api/milk?search=${searchValue}&page=${page.current}`)
         .then(res => res.json())
         .then(res => {
           setMilkData(res);
           setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
         })
-        .catch(err => console.error(err));
-      (event.currentTarget as HTMLInputElement).value = '';
+        .catch(err => console.error(err))
+    }
+  }
+
+  const submitWithEnterKey = (event: React.KeyboardEvent): void => {
+    if (event.key === 'Enter') {
+      const urlParams = new URLSearchParams(window.location.search);
+      const filter = urlParams.get('type');
+      if (filter) {
+        navigate(`?search=${searchValue}&type=${filter}&page=${page.current}`);
+        fetch(`./api/milk?search=${searchValue}&type=${filter}&page=${page.current}`)
+          .then(res => res.json())
+          .then(res => {
+            setMilkData(res);
+            setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
+          })
+          .catch(err => console.error(err))
+      } else {
+        navigate(`?search=${searchValue}&page=${page.current}`);
+        fetch(`./api/milk?search=${searchValue}&page=${page.current}`)
+          .then(res => res.json())
+          .then(res => {
+            setMilkData(res);
+            setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
+          })
+          .catch(err => console.error(err))
+      }
     }
   };
 
@@ -77,7 +102,6 @@ const Home = () => {
       search && (url += `&search=${search}`);
       filter && (url += `&type=${filter.split(' ').join('%20')}`);
       page && (url += `&page=${Number(pageUrl) + 1}`);
-      // fetch(`./api/milk/filter?page=${page.current + 1}`)
       fetch(`./api/milk?${url}`)
         .then(res => res.json())
         .then(res => {
@@ -105,14 +129,27 @@ const Home = () => {
 
   const handleCheckboxChange = async (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
-    navigate(`?&type=${event.currentTarget.name}&page=${page.current}`);
-    fetch(`./api/milk?type=${event.currentTarget.name}&page=${page.current}`)
-      .then(res => res.json())
-      .then(res => {
-        setMilkData(res);
-        setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
-      })
-      .catch(err => console.error(err))
+    const urlParams = new URLSearchParams(window.location.search);
+    const search = urlParams.get('search');
+    if (search) {
+      navigate(`?search=${search}&type=${event.currentTarget.name}&page=${page.current}`);
+      fetch(`./api/milk?search=${search}&type=${event.currentTarget.name}&page=${page.current}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+    } else {
+      navigate(`?type=${event.currentTarget.name}&page=${page.current}`);
+      fetch(`./api/milk?type=${event.currentTarget.name}&page=${page.current}`)
+        .then(res => res.json())
+        .then(res => {
+          setMilkData(res);
+          setPage({ current: 1, last: Math.ceil(res.numberOfItems / 9) })
+        })
+        .catch(err => console.error(err))
+    }
   };
 
   return (
@@ -135,4 +172,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home;
